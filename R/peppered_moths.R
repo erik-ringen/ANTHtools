@@ -5,6 +5,7 @@
 #' @param predation Intensity of predation, MUST BE BETWEEN 0 and 1.
 #' @param mutation_rate mutation_rate, MUST BE BETWEEN 0 and 1.
 #' @return Returns a dataframe of moth phenotypes over time, plus pollution levels
+#' @export
 
 moth_sim <- function( pollution, speed, predation, mutation_rate ) {
 
@@ -114,6 +115,7 @@ return(moth_df)
 #' @description Plots the results of peppered moths simulation
 #' @param sim moth simulation data, created by moth_sim()
 #' @return three-panel plot
+#' @export
 
 plot_moth <- function(sim) {
 
