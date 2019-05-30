@@ -4,7 +4,7 @@
 \alias{plot_moth}
 \title{plot_moth}
 \usage{
-plot_moth(sim)
+plot_moth(x)
 }
 \arguments{
 \item{sim}{moth simulation data, created by moth_sim()}

@@ -4,10 +4,12 @@
 #' @param speed Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'.
 #' @param predation Intensity of predation, MUST BE BETWEEN 0 and 1.
 #' @param mutation_rate mutation_rate, MUST BE BETWEEN 0 and 1.
-#' @return Returns a dataframe of moth phenotypes over time, plus pollution levels
+#' @return Returns a list of moth phenotypes over time, plus pollution levels and input parameter values
 #' @export
 
 moth_sim <- function( pollution, speed, predation, mutation_rate ) {
+
+  parms = c( pollution, speed, predation, mutation_rate ) # saving initial values
 
   # Building support functions
   '%ni%' <- Negate('%in%')
@@ -81,9 +83,9 @@ for (t in 0:N_gen) {
   if (speed == "fast") pollution = logistic(inv_logit(pollution) + rnorm(1, 0, 2.5))
 
   # Predation
-  light_survive <- light_survive * (1 - predation * abs(pollution - 0))
-  medium_survive <- medium_survive * (1 - predation * abs(pollution - 0.5))
-  dark_survive <- dark_survive * (1 - predation * abs(pollution - 1))
+  light_survive <- light_survive * (1 - (predation/2) * abs(pollution - 0))
+  medium_survive <- medium_survive * (1 - (predation/2) * abs(pollution - 0.5))
+  dark_survive <- dark_survive * (1 - (predation/2) * abs(pollution - 1))
 
   # Mutation
   light_med <- light_survive * (mutation_rate/2)
@@ -107,7 +109,9 @@ for (t in 0:N_gen) {
 } # end simulation
 ################################################
 
-return(moth_df)
+moth_list <- list(moth_df=moth_df, parms=parms)
+
+return(moth_list)
 }
 }
 
@@ -117,7 +121,9 @@ return(moth_df)
 #' @return three-panel plot
 #' @export
 
-plot_moth <- function(sim) {
+plot_moth <- function(x) {
+
+  sim <- x$moth_df
 
   if (colnames(sim)[1] == "light") {
     par(mfrow=c(3,1))
@@ -131,6 +137,7 @@ plot_moth <- function(sim) {
     lines(x=seq(from=0, to=100), y=sim[,1], col="orange", lwd=2)
     lines(x=seq(from=0, to=100), y=sim[,2], col="red", lwd=2)
     lines(x=seq(from=0, to=100), y=sim[,3], col="darkred", lwd=2)
+    mtext(paste0("pollution = ", x$parms[1], "    speed = ", x$parms[2], "   predation = ", x$parms[3], "   mutation = ", x$parms[4]))
 
     # Pollution time-series
     plot(NA, xlim=c(0,100), ylim=c(0,1), xlab="Time", ylab="Pollution Level")

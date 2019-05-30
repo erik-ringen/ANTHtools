@@ -16,7 +16,7 @@ moth_sim(pollution, speed, predation, mutation_rate)
 \item{mutation_rate}{mutation_rate, MUST BE BETWEEN 0 and 1.}
 }
 \value{
-Returns a dataframe of moth phenotypes over time, plus pollution levels
+Returns a list of moth phenotypes over time, plus pollution levels and input parameter values
 }
 \description{
 Simulates the evolution of peppered moths in a polluted environment, based on Wilensky, U. (1997). NetLogo Peppered Moths model. http://ccl.northwestern.edu/netlogo/models/PepperedMoths. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
