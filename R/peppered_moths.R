@@ -3,13 +3,13 @@
 #' @param pollution Environmental pollution levels, MUST BE BETWEEN 0 and 1.
 #' @param speed Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'.
 #' @param predation Intensity of predation, MUST BE BETWEEN 0 and 1.
-#' @param mutation_rate mutation_rate, MUST BE BETWEEN 0 and 1.
+#' @param drift strength of drift, must be positive.
 #' @return Returns a list of moth phenotypes over time, plus pollution levels and input parameter values
 #' @export
 
-moth_sim <- function( pollution, speed, predation, mutation_rate ) {
+moth_sim <- function( pollution, speed, predation, drift ) {
 
-  parms = c( pollution, speed, predation, mutation_rate ) # saving initial values
+  parms = c( pollution, speed, predation, drift ) # saving initial values
 
   # Building support functions
   '%ni%' <- Negate('%in%')
@@ -37,12 +37,12 @@ moth_sim <- function( pollution, speed, predation, mutation_rate ) {
     print("Error: predation parameter must be between 0 and 1")
   }
 
-  else if (mutation_rate < 0 || mutation_rate > 1) {
-    print("Error: mutation_rate parameter must be between 0 and 1")
+  else if (drift %ni% c("none", "small", "large")) {
+    print("Error: drift parameter must be not be 'none', 'small', or 'large'")
   }
 
   else if (speed %ni% c("fixed", "slow", "fast")) {
-    print("Error: spped parameter must be 'fixed' (default), 'slow', or 'fast'")
+    print("Error: spped parameter must be 'fixed', 'slow', or 'fast'")
   }
 
   else {
@@ -51,7 +51,6 @@ N_init <- 100
 N_gen <- 100
 
 # Initialize the population, sampling each moth color evenly
-set.seed(124)
 init_moths <- sample( c("light", "medium", "dark"), size=N_init, replace=TRUE )
 
 # Each generation, the life-cycle is:
@@ -87,18 +86,23 @@ for (t in 0:N_gen) {
   medium_survive <- medium_survive * (1 - (predation/2) * abs(pollution - 0.5))
   dark_survive <- dark_survive * (1 - (predation/2) * abs(pollution - 1))
 
-  # Mutation
-  light_med <- light_survive * (mutation_rate/2)
-  light_dark <- light_survive * (mutation_rate/2)
-  med_light <- medium_survive * (mutation_rate/2)
-  med_dark <- medium_survive * (mutation_rate/2)
-  dark_light <- dark_survive * (mutation_rate/2)
-  dark_med <- dark_survive * (mutation_rate/2)
+  # Drift (random fluctuation in pop size)
+  if (drift == "small") {
+  light_survive <- light_survive + rnorm(1, mean=0, sd=0.05*light_survive)
+  medium_survive <- medium_survive + rnorm(1, mean=0, sd=0.05*medium_survive)
+  dark_survive <- dark_survive + rnorm(1, mean=0, sd=0.05*dark_survive)
+  }
+
+  if (drift == "large") {
+    light_survive <- light_survive + rnorm(1, mean=0, sd=0.2*light_survive)
+    medium_survive <- medium_survive + rnorm(1, mean=0, sd=0.2*medium_survive)
+    dark_survive <- dark_survive + rnorm(1, mean=0, sd=0.2*dark_survive)
+  }
 
   # Reproduction, with exponential growth and asexual reproduction
-  light_survive <- exp(0.15) * (light_survive - light_med - light_dark + med_light + dark_light)
-  medium_survive <- exp(0.15) * (medium_survive - med_light - med_dark + light_med + dark_med)
-  dark_survive <- exp(0.15) * (dark_survive - dark_light - dark_med + light_dark + med_dark)
+  light_survive <- exp(0.15) * (light_survive)
+  medium_survive <- exp(0.15) * (medium_survive)
+  dark_survive <- exp(0.15) * (dark_survive)
   }
 
   # Recording each pop. size (virtual ecology!)
@@ -137,7 +141,7 @@ plot_moth <- function(x) {
     lines(x=seq(from=0, to=100), y=sim[,1], col="orange", lwd=2)
     lines(x=seq(from=0, to=100), y=sim[,2], col="red", lwd=2)
     lines(x=seq(from=0, to=100), y=sim[,3], col="darkred", lwd=2)
-    mtext(paste0("pollution = ", x$parms[1], "    speed = ", x$parms[2], "   predation = ", x$parms[3], "   mutation = ", x$parms[4]))
+    mtext(paste0("pollution = ", x$parms[1], "    speed = ", x$parms[2], "   predation = ", x$parms[3], "   drift = ", x$parms[4]))
 
     # Pollution time-series
     plot(NA, xlim=c(0,100), ylim=c(0,1), xlab="Time", ylab="Pollution Level")
@@ -145,8 +149,6 @@ plot_moth <- function(x) {
 
     # Pop. proportion
     plot(NA, xlim=c(0,100), ylim=c(0,1), xlab="Time", ylab="Moth Color Proportion")
-    if (sum(sim[1,1:3]) > sum(sim[101,1:3])) legend(legend=c("Light", "Medium", "Dark"), x=85, y=1, lwd=2, col=c("orange", "red", "darkred"))
-    else legend(legend=c("Light", "Medium", "Dark"), x=0, y=1, lwd=2, col=c("orange", "red", "darkred"))
     lines(x=seq(from=0, to=100), y=sim[,1] / rowSums(sim[,-4]), col="orange", lwd=2)
     lines(x=seq(from=0, to=100), y=sim[,2] / rowSums(sim[,-4]), col="red", lwd=2)
     lines(x=seq(from=0, to=100), y=sim[,3] / rowSums(sim[,-4]), col="darkred", lwd=2)

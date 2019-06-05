@@ -4,7 +4,7 @@
 \alias{moth_sim}
 \title{moth_sim}
 \usage{
-moth_sim(pollution, speed, predation, mutation_rate)
+moth_sim(pollution, speed, predation, drift)
 }
 \arguments{
 \item{pollution}{Environmental pollution levels, MUST BE BETWEEN 0 and 1.}
@@ -13,7 +13,7 @@ moth_sim(pollution, speed, predation, mutation_rate)
 
 \item{predation}{Intensity of predation, MUST BE BETWEEN 0 and 1.}
 
-\item{mutation_rate}{mutation_rate, MUST BE BETWEEN 0 and 1.}
+\item{drift}{strength of drift, must be positive.}
 }
 \value{
 Returns a list of moth phenotypes over time, plus pollution levels and input parameter values
