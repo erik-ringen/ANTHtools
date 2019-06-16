@@ -13,7 +13,7 @@ moth_sim(pollution, speed, predation, drift)
 
 \item{predation}{Intensity of predation, MUST BE BETWEEN 0 and 1.}
 
-\item{drift}{strength of drift, must be positive.}
+\item{drift}{magnitude of drift, must be either 'none', 'small', or 'large'.}
 }
 \value{
 Returns a list of moth phenotypes over time, plus pollution levels and input parameter values

@@ -3,7 +3,7 @@
 #' @param pollution Environmental pollution levels, MUST BE BETWEEN 0 and 1.
 #' @param speed Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'.
 #' @param predation Intensity of predation, MUST BE BETWEEN 0 and 1.
-#' @param drift strength of drift, must be positive.
+#' @param drift magnitude of drift, must be either 'none', 'small', or 'large'.
 #' @return Returns a list of moth phenotypes over time, plus pollution levels and input parameter values
 #' @export
 
@@ -49,6 +49,8 @@ moth_sim <- function( pollution, speed, predation, drift ) {
 
 N_init <- 100
 N_gen <- 100
+
+if (drift == "none") { set.seed(124) }
 
 # Initialize the population, sampling each moth color evenly
 init_moths <- sample( c("light", "medium", "dark"), size=N_init, replace=TRUE )
@@ -100,9 +102,9 @@ for (t in 0:N_gen) {
   }
 
   # Reproduction, with exponential growth and asexual reproduction
-  light_survive <- exp(0.15) * (light_survive)
-  medium_survive <- exp(0.15) * (medium_survive)
-  dark_survive <- exp(0.15) * (dark_survive)
+  light_survive <- round(exp(0.15) * light_survive)
+  medium_survive <- round(exp(0.15) * medium_survive)
+  dark_survive <- round(exp(0.15) * dark_survive)
   }
 
   # Recording each pop. size (virtual ecology!)
