@@ -13,7 +13,7 @@ HipsterTransmission(N, d, s = 0, k, t_max)
 
 \item{s}{Variation in anticonformity preference, units indicate standard deviations; defaults to 0.}
 
-\item{k}{Adjustment rate, bounded between 0 and 1. Controls how fast agents update their trait values}
+\item{k}{Adjustment rate, bounded between 0 and 1. Controls how fast agents update their trait values.}
 
 \item{t_max}{How many generations to run the sim.}
 }

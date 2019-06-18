@@ -10,4 +10,4 @@ d_trip <- d_trip[d_trip$group_size < 9,] # dropping one outlier hunt with 9 peop
 AgtaForaging <- d_trip
 
 # Export data object
-devtools::use_data(AgtaForaging, overwrite = T)
+usethis::use_data(AgtaForaging, overwrite = T)

@@ -1,0 +1,38 @@
+﻿Region,Sample,Mean_M,SD_M,Mean_F,SD_F
+African,Nigeria,-6.45,5.04,4.9,2.17
+African,S. Africa (whites),-2.3,2.19,3.5,2.23
+African,S. Africa (Zulu),-3.33,2.31,3.76,3.68
+African,Zambia,-7.38,6.39,4.14,1.99
+Asian,China,-2.05,2.47,3.45,1.73
+Asian,India,-3.06,2.55,3.29,1.96
+Asian,Indonesia,-2.72,4.41,4.69,1.87
+Asian,Iran,-4.02,1.62,5.1,1.79
+Asian,Israel (Jewish),-2.88,3.82,3.95,4.9
+Asian,Israel (Palestinian),-3.75,1.99,3.71,1.86
+Asian,Japan,-2.37,2.29,3.05,1.62
+Asian,Taiwan,-3.13,2.29,3.78,1.98
+European-Eastern,Bulgaria,-3.13,2.87,4.18,2.61
+European-Eastern,Estonian S.S.R.,-2.19,2.58,2.85,1.52
+European-Eastern,Poland,-2.85,2.94,3.38,3.02
+European-Eastern,Yugoslavia,-2.47,2.29,3.61,1.98
+European-Western,Belgium,-2.53,5.15,2.46,2.49
+European-Western,France,-1.94,2.47,4,3.17
+European-Western,Finland,-0.38,3.22,2.83,2.35
+European-Western,Germany-West,-2.52,3.87,3.7,3.67
+European-Western,Great Britain,-1.92,3.78,2.26,2.58
+European-Western,Greece,-3.36,3.2,4.54,2.55
+European-Western,Ireland,-2.07,1.93,2.78,1.91
+European-Western,Italy,-2.76,2.77,3.24,2.41
+European-Western,Nethetlands,-1.01,2.51,2.72,3.01
+European-Western,Norway,-1.91,4.14,3.12,2.36
+European-Western,Spain,-1.46,2.43,2.6,4.25
+European-Western,Sweden,-2.34,4.87,2.91,2.79
+North American,Canada (English),-1.53,1.93,2.72,2.01
+North American,Canada (French),-1.22,1.69,1.82,1.83
+North American,USA (Mainland),-1.65,2.62,2.54,1.9
+North American,USA (Hawaii),-1.92,2.46,3.3,3.25
+Oceanian,Australia,-1.77,2.34,2.86,2.72
+Oceanian,New Zealand,-1.59,2.47,2.91,1.85
+South American,Brazil,-2.94,3.35,3.94,3.23
+South American,Colombia,-4.45,3.01,4.51,2.85
+South American,Venezuela,-2.99,3.05,3.62,3.25
