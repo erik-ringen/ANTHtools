@@ -4,14 +4,14 @@
 \alias{ConformistTransmission}
 \title{ConformistTransmission}
 \usage{
-ConformistTransmission(N, p_0, D, t_max, add = FALSE, col = "black")
+ConformistTransmission(N, p_0, d, t_max, add = FALSE, col = "black")
 }
 \arguments{
 \item{N}{Population size}
 
 \item{p_0}{Proportion of agents with trait A at the start of the simulation.}
 
-\item{D}{Strength of conformity}
+\item{d}{Strength of conformity}
 
 \item{t_max}{How many generations to run the sim.}
 

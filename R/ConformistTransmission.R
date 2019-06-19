@@ -2,13 +2,13 @@
 #' @description Agent-based model simulation of conformist tranmission, only slightly modified from Alex Mesoudi's code here: https://github.com/amesoudi/cultural_evolution_ABM_tutorial/blob/master/ABMmodels_model3.Rmd
 #' @param N Population size
 #' @param p_0 Proportion of agents with trait A at the start of the simulation.
-#' @param D Strength of conformity
+#' @param d Strength of conformity
 #' @param t_max How many generations to run the sim.
 #' @param add Whether or not the new sim should be added to an existing plot; defaults to FALSE.
 #' @param col Color of lines for plotting; defaults to black.
 #' @export
 
-ConformistTransmission <- function (N, p_0, D, t_max, add=FALSE, col="black" ) {
+ConformistTransmission <- function (N, p_0, d, t_max, add=FALSE, col="black" ) {
 
   output <- rep(NA,t_max)  # create a matrix with t_max rows and r_max columns, filled with NAs, then convert to data.frame
 
@@ -27,11 +27,11 @@ ConformistTransmission <- function (N, p_0, D, t_max, add=FALSE, col="black" ) {
       prob <- runif(N)
 
       # when A is a majority, 2/3
-      agent$trait[numAs == 2 & prob < (2/3 + D/3)] <- "A"
-      agent$trait[numAs == 2 & prob >= (2/3 + D/3)] <- "B"
+      agent$trait[numAs == 2 & prob < (2/3 + d/3)] <- "A"
+      agent$trait[numAs == 2 & prob >= (2/3 + d/3)] <- "B"
       # when A is a minority, 1/3
-      agent$trait[numAs == 1 & prob < (1/3 - D/3)] <- "A"
-      agent$trait[numAs == 1 & prob >= (1/3 - D/3)] <- "B"
+      agent$trait[numAs == 1 & prob < (1/3 - d/3)] <- "A"
+      agent$trait[numAs == 1 & prob >= (1/3 - d/3)] <- "B"
       output[t] <- sum(agent$trait == "A") / N  # get p and put it into output slot for this generation t and run r
 
     }
