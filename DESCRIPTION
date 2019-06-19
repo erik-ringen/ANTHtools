@@ -1,5 +1,5 @@
 Package: ANTHtools
-Title: What the Package Does (one line, title case)
+Title: R Package for Intro to BioAnth
 Version: 0.0.1
 Authors@R: person("Erik", "Ringen", email = "ringen.erik@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
