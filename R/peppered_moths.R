@@ -47,10 +47,8 @@ moth_sim <- function( pollution, speed, predation, drift ) {
 
   else {
 
-N_init <- 100
+N_init <- 1000
 N_gen <- 100
-
-if (drift == "none") { set.seed(124) }
 
 # Initialize the population, sampling each moth color evenly
 init_moths <- sample( c("light", "medium", "dark"), size=N_init, replace=TRUE )
@@ -80,8 +78,12 @@ for (t in 0:N_gen) {
   else {
 
   # Pollution fluctuations
-  if (speed == "slow") pollution = logistic(inv_logit(pollution) + rnorm(1, 0, 0.5))
-  if (speed == "fast") pollution = logistic(inv_logit(pollution) + rnorm(1, 0, 2.5))
+  if (speed == "slow") pollution = pollution + rnorm(1, 0, 0.02)
+  if (speed == "fast") pollution = pollution + rnorm(1, 0, 0.1)
+
+  # Constraint
+  if (pollution < 0) pollution = 0
+  if (pollution > 1) pollution = 1
 
   # Predation
   light_survive <- light_survive * (1 - (predation/2) * abs(pollution - 0))
