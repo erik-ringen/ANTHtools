@@ -4,9 +4,11 @@
 \alias{moth_sim}
 \title{moth_sim}
 \usage{
-moth_sim(pollution, speed, predation, drift)
+moth_sim(pop_size, pollution, speed, predation, drift)
 }
 \arguments{
+\item{pop_size}{Initial moth population size}
+
 \item{pollution}{Environmental pollution levels, MUST BE BETWEEN 0 and 1.}
 
 \item{speed}{Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'.}

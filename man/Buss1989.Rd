@@ -4,7 +4,8 @@
 \name{Buss1989}
 \alias{Buss1989}
 \title{Buss1989}
-\format{A data frame with 148 rows and 6 variables:
+\format{
+A data frame with 148 rows and 6 variables:
 \describe{
   \item{\code{Sample}}{integer Sample population}
   \item{\code{Region}}{integer World region for sample}
@@ -13,7 +14,8 @@
   \item{\code{Mean_M}}{double Mean value for male respondents}
   \item{\code{SD_F}}{double Standard deviation for female respondents}
   \item{\code{SD_M}}{double Standard deviation for male respondents}
-}}
+}
+}
 \usage{
 Buss1989
 }

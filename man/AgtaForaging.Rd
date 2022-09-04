@@ -4,7 +4,8 @@
 \name{AgtaForaging}
 \alias{AgtaForaging}
 \title{AgtaForaging}
-\format{A data frame with 179 rows and 6 variables:
+\format{
+A data frame with 179 rows and 6 variables:
 \describe{
   \item{\code{trip_id}}{integer index for hunting trip}
   \item{\code{harvest}}{double kg of meat harvested}
@@ -12,7 +13,8 @@
   \item{\code{pooled}}{double binary indicator of whether the harvest was shared across foragers, 1 = yes}
   \item{\code{zero_return}}{double binary indicator of whether the hunt failed, 1 = yes}
   \item{\code{trip_duration}}{length of foraging trip, in hours}
-}}
+}
+}
 \source{
 \url{https://www.biorxiv.org/content/biorxiv/early/2019/03/12/574483.full.pdf}
 }
