@@ -1,16 +1,21 @@
 #' @title moth_sim
 #' @description Simulates the evolution of peppered moths in a polluted environment, based on Wilensky, U. (1997). NetLogo Peppered Moths model. http://ccl.northwestern.edu/netlogo/models/PepperedMoths. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
-#' @param pop_size Initial moth population size
-#' @param pollution Environmental pollution levels, MUST BE BETWEEN 0 and 1.
-#' @param speed Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'.
-#' @param predation Intensity of predation, MUST BE BETWEEN 0 and 1.
-#' @param drift magnitude of drift, must be either 'none', 'small', or 'large'.
+#' @param pop_size Initial moth population size, defaults to 1000.
+#' @param pollution Environmental pollution levels, MUST BE BETWEEN 0 and 1. Defaults to 0.
+#' @param speed Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'. Defaults to "fixed".
+#' @param predation Intensity of predation, MUST BE BETWEEN 0 and 1. Defaults to 0.
+#' @param drift magnitude of drift, must be either 'none', 'small', or 'large'. Defaults to "small".
+#' @param migration Logical argument. If FALSE (F), the default, then no moths enter the population from outside. If TRUE (T), then migrant moths will reintroduce variation into the population even if it had reached fixation.
+#' @param N_gen Number of generations to run the simulation. Defaults to 2000.
 #' @return Returns a list of moth phenotypes over time, plus pollution levels and input parameter values
 #' @export
 
-moth_sim <- function(pop_size, pollution, speed, predation, drift) {
+moth_sim <- function(pop_size = 1000, pollution = 0, speed = "fixed", predation = 0, drift = "small", migration = F, N_gen = 2000) {
 
   parms = c(pop_size, pollution, speed, predation, drift) # saving initial values
+
+  # Sanitize inputs
+  N_gen <- ceiling(N_gen)
 
   # Building support functions
   '%ni%' <- Negate('%in%')
@@ -46,9 +51,11 @@ moth_sim <- function(pop_size, pollution, speed, predation, drift) {
     print("Error: spped parameter must be 'fixed', 'slow', or 'fast'")
   }
 
-  else {
+  else if (N_gen < 1) {
+    print("Error: number of generations must be greater than 0")
+  }
 
-N_gen <- 2000
+  else {
 
 # Initialize the population, sampling each moth color evenly
 init_moths <- sample( c("light", "medium", "dark"), size = ceiling(pop_size), replace = TRUE )
@@ -129,6 +136,19 @@ for (t in 0:N_gen) {
   medium_survive <- max(c(0, medium_survive))
   dark_survive <- max(c(0, dark_survive))
 
+  # "Migration" Rate, a hacky solution to reintroduce variation in the population
+  if (migration == T) {
+
+    n_migrants <- pop_size * 0.005 # half percent of initial pop size
+
+    # which color are they?
+    moth_color <- sample(c("light", "medium", "dark"), size = n_migrants, replace = T)
+
+    light_survive <- light_survive + sum(moth_color == "light")
+    medium_survive <- medium_survive + sum(moth_color == "medium")
+    dark_survive <- dark_survive + sum(moth_color == "dark")
+  }
+
   # Reproduction, with exponential growth and asexual reproduction
   light_survive <- round(exp(0.15) * light_survive)
   medium_survive <- round(exp(0.15) * medium_survive)
@@ -152,46 +172,82 @@ return(moth_list)
 }
 }
 
+
 #' @title plot_moth
 #' @description Plots the results of peppered moths simulation
 #' @param sim moth simulation data, created by moth_sim()
+#' @param plot_fixation Logical, if TRUE (T), plots a vertical line for the generation that the population hit fixation. If FALSE (F), the default, then don't plot the line.
 #' @return three-panel plot
 #' @export
 
-plot_moth <- function(x) {
+plot_moth <- function(x, plot_fixation = F) {
 
-  sim <- x$moth_df
-  parms <- x$parms
-  l <- nrow(sim) - 1
+  moth_df <- x$moth_df %>%
+    mutate(Time = 0:(n() - 1))
 
-  if (colnames(sim)[1] == "light") {
-    par(mfrow=c(3,1))
+  d_fix <- data.frame(fix_time = x$fixation)
 
-    # Population time-series
-    plot(NA, xlim=c(0,l), ylim=c(0,max(sim)), xlab="Time", ylab="Moth Population Size")
+  pop_df <- moth_df %>%
+    group_by(Time) %>%
+    pivot_longer(names_to = "color", values_to = "n", -c(Time, pol)) %>%
+    mutate(color = factor(color, levels = c("light", "medium", "dark")))
 
-    # Put the legend in a good place, depending on sim result
-    if (sum(sim[1,1:3]) > sum(sim[101,1:3])) legend(legend=c("Light", "Medium", "Dark"), x=85, y=max(sim), lwd=2, col=c("orange", "red", "darkred"))
-    else legend(legend=c("Light", "Medium", "Dark"), x=0, y=max(sim), lwd=2, col=c("orange", "red", "darkred"))
-    lines(x=seq(from=0, to=l), y=sim[,1], col="orange", lwd=2)
-    lines(x=seq(from=0, to=l), y=sim[,2], col="red", lwd=2)
-    lines(x=seq(from=0, to=l), y=sim[,3], col="darkred", lwd=2)
-    mtext(paste0("pollution = ", x$parms[2], "    speed = ", x$parms[3], "   predation = ", x$parms[4], "   drift = ", x$parms[5]))
-    abline(v = x$fixation, lty = "dashed", col = "royalblue")
+  prop_df <- pop_df %>%
+    group_by(Time) %>%
+    mutate(total_pop = sum(n)) %>%
+    ungroup() %>%
+    mutate(prop = n / total_pop)
 
-    # Pollution time-series
-    plot(NA, xlim=c(0,l), ylim=c(0,1), xlab="Time", ylab="Pollution Level")
-    lines(x=seq(from=0, to=l), y=sim[,4], lwd=2)
+  # Raw count of moths over time
+  p_moth_pop <- pop_df %>%
+    ggplot(aes(x = Time, y = n, color = color)) +
+    geom_line(alpha = 0.7) +
+    ggtitle("Moth Pop Size") +
+    ylab("") +
+    xlab("") +
+    scale_color_manual(values = c("orange", "red", "darkred")) +
+    theme_bw(base_size = 16) +
+    theme(legend.title = element_blank(),panel.grid.major = element_blank(), panel.grid.minor = element_blank(), plot.title = element_text(size = 16)) +
+    guides(colour = guide_legend(override.aes = list(size = 2)))
 
-    # Pop. proportion
-    plot(NA, xlim=c(0,l), ylim=c(0,1), xlab="Time", ylab="Moth Color Proportion")
-    lines(x=seq(from=0, to=l), y=sim[,1] / rowSums(sim[,-4]), col="orange", lwd=2)
-    lines(x=seq(from=0, to=l), y=sim[,2] / rowSums(sim[,-4]), col="red", lwd=2)
-    lines(x=seq(from=0, to=l), y=sim[,3] / rowSums(sim[,-4]), col="darkred", lwd=2)
-    abline(v = x$fixation, lty = "dashed", col = "royalblue")
+  # Pollution over time
+  p_pol <- moth_df %>%
+    ggplot(aes(x = Time, y = pol, alpha = pol)) +
+    geom_line(lwd = 0.5) +
+    ggtitle("Pollution Level") +
+    ylab("") +
+    scale_y_continuous(limits = c(0, 1), breaks = c(0, 1), labels = c("Min", "Max")) +
+    theme_bw(base_size = 16) +
+    theme(legend.position = "none",panel.grid.major = element_blank(), panel.grid.minor = element_blank(), plot.title = element_text(size = 16)) +
+    guides(colour = guide_legend(override.aes = list(size = 2)))
+
+  # Proportion of moths over time
+  p_moth_prop <- prop_df %>%
+    ggplot(aes(x = Time, y = prop, color = color)) +
+    geom_line(alpha = 0.7) +
+    ggtitle("Moth Color Proportion") +
+    ylab("") +
+    xlab("") +
+    scale_y_continuous(breaks = c(0, 0.5, 1), labels = c("0", "0.5", "1")) +
+    scale_color_manual(values = c("orange", "red", "darkred")) +
+    theme_bw(base_size = 16) +
+    theme(legend.title = element_blank(),panel.grid.major = element_blank(), panel.grid.minor = element_blank(), plot.title = element_text(size = 16)) +
+    guides(colour = guide_legend(override.aes = list(size = 2)))
+
+  # Patch together ###
+
+  if (plot_fixation == T) {
+    p_moth_pop <- p_moth_pop + geom_vline(data = d_fix, aes(xintercept = fix_time), linetype = "dashed")
+
+    p_moth_prop <- p_moth_prop + geom_vline(data = d_fix, aes(xintercept = fix_time), linetype = "dashed")
+
+    p_moth_pop / p_moth_prop / p_pol +
+      plot_layout(guides = 'collect')
   }
 
-  else {
-    print("Error: object not created with moth_sim() function")
-  }
+  else p_moth_pop / p_moth_prop / p_pol +
+    plot_layout(guides = 'collect')
+
 }
+
+

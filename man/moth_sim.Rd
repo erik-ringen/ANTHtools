@@ -4,18 +4,30 @@
 \alias{moth_sim}
 \title{moth_sim}
 \usage{
-moth_sim(pop_size, pollution, speed, predation, drift)
+moth_sim(
+  pop_size = 1000,
+  pollution = 0,
+  speed = "fixed",
+  predation = 0,
+  drift = "small",
+  migration = F,
+  N_gen = 2000
+)
 }
 \arguments{
-\item{pop_size}{Initial moth population size}
+\item{pop_size}{Initial moth population size, defaults to 1000.}
 
-\item{pollution}{Environmental pollution levels, MUST BE BETWEEN 0 and 1.}
+\item{pollution}{Environmental pollution levels, MUST BE BETWEEN 0 and 1. Defaults to 0.}
 
-\item{speed}{Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'.}
+\item{speed}{Rate of environmental (pollution) change, either 'fixed' (no change), 'slow', or 'fast'. Defaults to "fixed".}
 
-\item{predation}{Intensity of predation, MUST BE BETWEEN 0 and 1.}
+\item{predation}{Intensity of predation, MUST BE BETWEEN 0 and 1. Defaults to 0.}
 
-\item{drift}{magnitude of drift, must be either 'none', 'small', or 'large'.}
+\item{drift}{magnitude of drift, must be either 'none', 'small', or 'large'. Defaults to "small".}
+
+\item{migration}{Logical argument. If FALSE (F), the default, then no moths enter the population from outside. If TRUE (T), then migrant moths will reintroduce variation into the population even if it had reached fixation.}
+
+\item{N_gen}{Number of generations to run the simulation. Defaults to 2000.}
 }
 \value{
 Returns a list of moth phenotypes over time, plus pollution levels and input parameter values

@@ -4,9 +4,11 @@
 \alias{plot_moth}
 \title{plot_moth}
 \usage{
-plot_moth(x)
+plot_moth(x, plot_fixation = F)
 }
 \arguments{
+\item{plot_fixation}{Logical, if TRUE (T), plots a vertical line for the generation that the population hit fixation. If FALSE (F), the default, then don't plot the line.}
+
 \item{sim}{moth simulation data, created by moth_sim()}
 }
 \value{
