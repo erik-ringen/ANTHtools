@@ -11,5 +11,6 @@ RoxygenNote: 7.2.1
 Imports: 
     dplyr,
     tidyr,
+    magrittr,
     ggplot2,
     patchwork
