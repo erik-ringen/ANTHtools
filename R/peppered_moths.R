@@ -181,6 +181,10 @@ return(moth_list)
 #' @export
 
 plot_moth <- function(x, plot_fixation = F) {
+  require(magrittr)
+  require(ggplot2)
+  require(dplyr)
+  require(patchwork)
 
   moth_df <- x$moth_df %>%
     mutate(Time = 0:(n() - 1))
