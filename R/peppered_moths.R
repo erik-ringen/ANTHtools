@@ -185,6 +185,7 @@ plot_moth <- function(x, plot_fixation = F) {
   require(ggplot2)
   require(dplyr)
   require(patchwork)
+  require(tidyr)
 
   moth_df <- x$moth_df %>%
     mutate(Time = 0:(n() - 1))
